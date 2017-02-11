@@ -22,8 +22,7 @@ void trinonsq(int *rows, int *cols, int *origcols, int *decp, int *upper, int *s
 
   /*This is the "grand loop" - the upper or lower triangular matrix, along with its diagonal
     matrix (if "special" is true) and permutation matrix EACH get modified together */
-  for(rowA = 0; rowA < rows_; rowA++)
-  {
+  for(rowA = 0; rowA < rows_; rowA++) {
 
     /*If "rowA" is the first row, then "opp" is the last row; if "rowA" is the second row,
     "opp" is the second-to-last row, and so on.*/
@@ -43,8 +42,7 @@ void trinonsq(int *rows, int *cols, int *origcols, int *decp, int *upper, int *s
       int broke = 0;
 
       //"diffRow" is the row that will be swapped with the row containing 0 as a diagonal element.
-      while((upper_ && diffRow <= rows_ - 1) || (!upper_ && diffRow >= 0))
-      {
+      while((upper_ && diffRow <= rows_ - 1) || (!upper_ && diffRow >= 0) {
 
 	//Break once a row is found that does not have 0 on the diagonal.
 	if(tri[diffRow*cols_ + diagRow] != 0) {
@@ -54,16 +52,13 @@ void trinonsq(int *rows, int *cols, int *origcols, int *decp, int *upper, int *s
 	
 	if(upper_) {
 	  diffRow++;
-	}
-	
-	else {
+	} else {
 	  diffRow--;
 	}
       }
 
       if(broke) {
-	for(col = 0; col < cols_; col++)
-	  {
+	for(col = 0; col < cols_; col++) {
 	    old = tri[diagRow*cols_ + col];
 	    new = tri[diffRow*cols_ + col];
 	    tri[diagRow*cols_ + col] = new;
@@ -75,7 +70,6 @@ void trinonsq(int *rows, int *cols, int *origcols, int *decp, int *upper, int *s
       * may occur if this matrix is modified and the intended triangular matrix
       * is formed from an augmented matrix*/
       if(*decp && broke) {
-	
 	for(col = 0; col < rows_; col++) {
 	  double oldP = pmat[diagRow*rows_ + col];
 	  double newP = pmat[diffRow*rows_ + col];
@@ -86,15 +80,14 @@ void trinonsq(int *rows, int *cols, int *origcols, int *decp, int *upper, int *s
     }
 
     //If special upper or lower specified, the diagonal matrix is modified.
-    if(special_) 
-    {
+    if(special_) {
       diag = upper_ ? tri[rowA*cols_ + rowA] : tri[opp*cols_ + opp + nonsq_shift];
 
       if(*diagonal)
 	diagmat[diagRow*rows_ + diagRow] = diag;
       
-      for(col = 0; col < cols_; col++)
-      {
+      for(col = 0; col < cols_; col++) {
+	      
 	if(diag != 0)
 	  tri[diagRow*cols_ + col] /= diag;
       }
@@ -107,12 +100,10 @@ void trinonsq(int *rows, int *cols, int *origcols, int *decp, int *upper, int *s
     if(diag == 0)
       continue;
     
-    while((upper_ && rowB < (rows_ - 1)) || (!upper_ && rowB > 0))
-    {	
+    while((upper_ && rowB < (rows_ - 1)) || (!upper_ && rowB > 0)) {	
       
       if(upper_)
 	rowB++;
-
       else
 	rowB--;
 
@@ -125,17 +116,13 @@ void trinonsq(int *rows, int *cols, int *origcols, int *decp, int *upper, int *s
       coeff = -1*nume/diag;
 
       //Row operation performed on each element of a given row ("rowB")
-      for(col = 0; col < cols_; col++) 
-      {
+      for(col = 0; col < cols_; col++) {
 
-	if(upper_) 
-	{
+	if(upper_) {
 	  tri[rowB*cols_ + col] = coeff*tri[rowA*cols_ + col] 
 	    + tri[rowB*cols_ + col];
 
-	}
-	else 
-	{
+	} else {
 	  tri[rowB*cols_ + col] = tri[rowB*cols_ + col] 
 	    + coeff*tri[opp*cols_ + col];
 
