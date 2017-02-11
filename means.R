@@ -1,9 +1,12 @@
+# Code for computing various types of averages.
+
 EPSILON <- 1e-8
 
 mean.norm <- function(vec, norm = 2) {
 
     if(is.infinite(norm) && norm > 0)
         return(max.or.min(vec))
+        
     if(is.infinite(norm) && norm < 0)
         return(max.or.min(vec, FALSE))
     
@@ -13,8 +16,7 @@ mean.norm <- function(vec, norm = 2) {
 #This is the straightforward geometric mean function that does not adjust
 # for values of 0. 
 # May produce undefined results for vectors containing negative values.
-mean.geom <-
-function(vec) {
+mean.geom <- function(vec) {
 
     p <- prod(vec)
     
@@ -34,9 +36,8 @@ function(vec) {
 # "comp" (default): This is an original, complicated way of replacing 0's with
 # appropriate nearby values based on the nonzero elements of the vector.
 # If an invalid method is passed in, "comp" will be used.
-mean.geom.zadj <-
-function(vec, method = "comp")
-{
+mean.geom.zadj <- function(vec, method = "comp") {
+    
     method <- tolower(method)
 
     #Changes 0 to 1
@@ -47,19 +48,18 @@ function(vec, method = "comp")
         }
 
         return(mean.geom(vec) - 1)
-    }
-    
-    #Adds 1 to each value
-    else if(method == "add") {
-                
+            
+    } else if(method == "add") {
+          
+        #Adds 1 to each value
         vec <- vec + 1
         return(mean.geom(vec) - 1)
-    }
-
-    #Removes 0 from "vec"
-    else if(method == "ignore"){
+            
+    } else if(method == "ignore"){
+        
         i <- 1
         
+        #Removes 0 from "vec"
         while(i <= length(vec)) {
             if(vec[i] == 0) {
                 vec <- vec[-1*i]
@@ -70,17 +70,13 @@ function(vec, method = "comp")
         }
         
         return(mean.geom(vec))
-    }
-
-    else
+    } else
         return(mean.zadj(vec, mean.geom))
 }
 
 #This computes the harmonic mean of the vector "vec". May produce undefined
 # results for vectors containing negative values.
-mean.harmonic <-
-function(vec)
-{
+mean.harmonic <- function(vec) {
     sum <- 0
 
     for(i in 1:length(vec))
@@ -96,9 +92,7 @@ function(vec)
 # "see.vec" should be TRUE if the modified (zero-adjusted) vector should be 
 # part of the return value; FALSE if only the mean should be returned.
 # The only time 0's are not removed is if "vec" contains only values of 0.
-mean.zadj <-
-function(vec, func, see.vec = FALSE)
-{
+mean.zadj <- function(vec, func, see.vec = FALSE) {
     
     vec <- sort(vec)
 
@@ -135,8 +129,7 @@ function(vec, func, see.vec = FALSE)
         umean = func(uvec)
         
         #If there is only one zero
-        if(lower == upper && length(lvec) != 0 &&
-           length(uvec) != 0) {
+        if(lower == upper && length(lvec) != 0 && length(uvec) != 0) {
 
             minU = min(uvec)
             maxL = max(lvec)
@@ -159,10 +152,9 @@ function(vec, func, see.vec = FALSE)
             
             vec[lower] <- possibles[index]
             break
-        }
-
-        # If there is more than 1 zero.
-        else {
+        } else {
+            
+            # If there is more than 1 zero.
             
             # How to handle negative numbers
             if(length(lvec) != 0) {
@@ -241,9 +233,7 @@ without.bad <- function(vec) {
 # the vector, pass in the vector as "vecs" and a 2-argument subtraction function as "func", e.g: 
 # func = function(x,y) x - y
 # This could also be used to compute a covariance matrix if "vecs" is a list of vectors.
-cross.matrix <-
-function(vecs, type = "num", remove = FALSE, func)
-{
+cross.matrix <- function(vecs, type = "num", remove = FALSE, func) {
    type <- tolower(type)
 
    if(type != "vec")
@@ -252,10 +242,11 @@ function(vecs, type = "num", remove = FALSE, func)
    if(remove && type == "num")
        vecs <- without.bad(vecs)
 
-   else if(remove)
+   else if(remove) {
        for(i in 1:length(vecs))
            vecs[[i]] <- without.bad(vecs[[i]])
-
+   }
+       
    i <- 1
    
    while(i <= length(vecs)) {
@@ -271,17 +262,21 @@ function(vecs, type = "num", remove = FALSE, func)
 
    sizes <- numeric(length(vecs))
 
-   if(type == "vec") 
+   if(type == "vec") {
        for(i in 1:length(vecs))
            sizes[i] <- length(vecs[[i]])
-
+   }
+       
    if(type == "vec") {
     
        newlist <- vector("list", length(vecs))
 
        if(remove) {
            
-           newlen <- max.or.min(sizes, FALSE)
+           # If "vecs" is a list of vectors, and the vectors have different lengths,
+           # the minimum of these lengths is considered so that "newlist" can be "square" (like 
+           # a list version of a square matrix) without any NA values.
+           newlen <- min(sizes)
            
            for(i in 1:length(newlist)) {
                for(j in 1:newlen)
@@ -292,6 +287,7 @@ function(vecs, type = "num", remove = FALSE, func)
 
            newlen <- max.or.min(sizes)
 
+           # NA may occur if vectors are not of the same length
            for(i in 1:length(newlist)) {
                for(j in 1:newlen) {
                    if(length(vecs[[i]]) <= newlen)
@@ -307,14 +303,16 @@ function(vecs, type = "num", remove = FALSE, func)
 
    cross <- matrix(0, length(vecs), length(vecs))
 
-   for(i in 1:nrow(cross))
+   # Fill matrix with result of function applications
+   for(i in 1:nrow(cross)) {
        for(j in 1:ncol(cross)) {
            if(remove || is.good(vecs[[i]]) && is.good(vecs[[j]]))
               cross[i, j] <- func(vecs[[i]], vecs[[j]])
            else
                cross[i, j] <- NA
        }
-
+    }
+           
    cross
 }
 
@@ -358,6 +356,7 @@ mean.inner <- function(vec, funcs, arg1 = rep(NA, length(vec)), arg2 = rep(NA, l
                 nextvec[i] <- funcs[[i]](start, arg1[i], arg2[i])
         }
         
+        # All possible differences
         cross.diffs <- cross.matrix(vecs = nextvec, remove = TRUE, func = function(x,y) x - y)
 
         # Convergence achieved
