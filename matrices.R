@@ -58,9 +58,8 @@ diag.nonsq <- function(x) {
 
 #If decomp is "lu" or "ldv", other arguments are ignored. If decomp is "lu", or decomp is "none" and special is FALSE, diag is ignored.
 
-mat.tri <- 
-function (x, decomp = "none", upTri = TRUE, special = FALSE, diag = FALSE, augment = FALSE, is.aug = FALSE, solvevec = NULL, has.vec = FALSE) 
-{
+mat.tri <- function (x, decomp = "none", upTri = TRUE, special = FALSE, diag = FALSE, augment = FALSE, is.aug = FALSE, 
+                     solvevec = NULL, has.vec = FALSE) {
     #origX will be "x" before any modifications occur
     origX <- x
     decomp <- toupper(decomp)
