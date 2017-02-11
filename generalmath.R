@@ -19,9 +19,8 @@ norm.p <- function(vec, norm) {
 # bases may require the use of other characters, which may be confusing to 
 # users. (10 digits + 26 letters = 36 possible characters; having lower- and 
 # uppercase letters represent different digits may be confusing).
-basechange.int <-  
-function(num, oldbase = 10, newbase)
-{
+basechange.int <- function(num, oldbase = 10, newbase) {
+    
     if(num < 0)
         stop("Value must be nonnegative")
     
@@ -53,9 +52,7 @@ function(num, oldbase = 10, newbase)
 
         ans <- paste(numvec, sep = "", collapse = "")
         return(ans)
-    }
-
-    else {
+    } else {
 
         # Convert from other base ("oldbase") to base 10.
         currnum <- toupper(as.character(num))
@@ -234,25 +231,19 @@ nearest.int.power <- function(base, num) {
         
        while(base^i < num)
            i <- i + nextI
-    }
-    
-    else if(num < 1 && base > 1){
+    } else if(num < 1 && base > 1){
 
         sameside <- FALSE
         
         while(base^i > num) 
            i <- i - nextI
-    }
-
-    else if(num < 1 && base < 1) {
+    } else if(num < 1 && base < 1) {
 
         sameside <- TRUE
 
         while(base^i > num)
             i <- i + nextI
-    }
-
-    else {
+    } else {
 
         sameside <- FALSE
 
@@ -266,9 +257,7 @@ nearest.int.power <- function(base, num) {
 
         diffLower <- abs(num - base^(i-nextI))       
         diffUpper <- abs(num - base^i)
-    }
-
-    else {
+    } else {
        
        diffLower <- abs(num - base^i)
        diffUpper <- abs(num - base^(i+nextI))
@@ -300,8 +289,7 @@ sequence.rec <- function(start, n = Inf, seq.func, make.list = FALSE, maxitt = 5
         n = maxitt
     else 
         maxitt = n
-    
-    
+       
     i <- 1
     
     dist <- numeric(2)
