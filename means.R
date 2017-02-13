@@ -13,18 +13,6 @@ mean.norm <- function(vec, norm = 2) {
     return(normp(vec, norm)/(length(vec)^(1/norm)))
 }
 
-#This is the straightforward geometric mean function that does not adjust
-# for values of 0. 
-# May produce undefined results for vectors containing negative values.
-mean.geom <- function(vec) {
-
-    p <- prod(vec)
-    
-    geom <- p ^(1/length(vec))
- 
-    geom
-}
-
 #This is the geometric mean where the vector is adjusted for values of 0.
 # There are 4 methods of adjusting for 0: 
 # "change": This replaces all 0's in the vector with 1's, computes the 
@@ -36,6 +24,8 @@ mean.geom <- function(vec) {
 # "comp" (default): This is an original, complicated way of replacing 0's with
 # appropriate nearby values based on the nonzero elements of the vector.
 # If an invalid method is passed in, "comp" will be used.
+# A geometric mean function already exists in R, but does not have all the
+# zero-adjusting methods as this.
 mean.geom.zadj <- function(vec, method = "comp") {
     
     method <- tolower(method)
